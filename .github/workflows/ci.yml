@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        preset: [debug, release]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build clang-tidy
+
+      - name: Configure (${{ matrix.preset }})
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }} -j
+
+      - name: Test
+        run: ctest --test-dir build/${{ matrix.preset }} --output-on-failure
+
+  clang-tidy:
+    runs-on: ubuntu-latest
+    # NOTE: Clang 18's __cpp_concepts feature-test macro reports the
+    # C++20 value (201907L) even under -std=c++23, which fails
+    # libstdc++'s feature gate for std::expected (it requires
+    # __cpp_concepts >= 202002L). This is a real Clang/libstdc++
+    # interop gap, not a bug in this codebase -- discovered by running
+    # clang-tidy locally against this exact repo, documented here
+    # instead of silently working around it. GCC's own __cpp_concepts
+    # reports the C++20 value correctly, so the debug/release/
+    # no-exceptions builds above (which use g++) are unaffected.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clang-tidy
+        run: sudo apt-get update && sudo apt-get install -y clang-tidy
+      - name: Configure (generate compile_commands.json)
+        run: cmake --preset release
+      - name: Run clang-tidy
+        run: |
+          find include src -name '*.hpp' -o -name '*.cpp' | \
+            xargs clang-tidy -p build/release -extra-arg=-D__cpp_concepts=202002L
+
+  no-exceptions-build:
+    runs-on: ubuntu-latest
+    # @req REQ-006: this job is the enforcement mechanism for
+    # "no exceptions on the hot path" -- if anyone (human or AI-assisted)
+    # introduces a throw on the traceline_core hot path, this fails the
+    # build rather than relying on code review alone.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure with -fno-exceptions
+        run: cmake --preset no-exceptions -DSENTINEL_BUILD_TESTS=OFF -DSENTINEL_BUILD_BENCHMARKS=OFF
+      - name: Build
+        run: cmake --build --preset no-exceptions -j
+
+  tsan-telemetry-bus:
+    runs-on: ubuntu-latest
+    # Dedicated job per docs/ai-workflow.md: the telemetry bus is the
+    # one concurrency-sensitive module, so it gets its own sanitizer
+    # pass separate from the general ASan/UBSan debug build.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure with TSan
+        run: |
+          cmake -B build/tsan -DCMAKE_CXX_FLAGS="-fsanitize=thread -g" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=thread"
+      - name: Build
+        run: cmake --build build/tsan -j
+      - name: Test
+        run: ctest --test-dir build/tsan --output-on-failure

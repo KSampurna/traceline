@@ -1,0 +1,29 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "debug",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "TRACELINE_ENABLE_SANITIZERS": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "TRACELINE_ENABLE_SANITIZERS": "OFF"
+      }
+    },
+    {
+      "name": "no-exceptions",
+      "binaryDir": "${sourceDir}/build/no-exceptions",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "TRACELINE_NO_EXCEPTIONS": "ON"
+      }
+    }
+  ]
+}

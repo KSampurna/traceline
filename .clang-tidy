@@ -1,0 +1,20 @@
+# MISRA-inspired subset enforced in CI -- see docs/design.md section 4.
+# This is a starting point, tightened over time as modules land.
+Checks: >
+  -*,
+  bugprone-*,
+  cert-*,
+  cppcoreguidelines-*,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
+  -readability-identifier-length
+
+WarningsAsErrors: 'bugprone-*,cert-*,performance-*'
+HeaderFilterRegex: 'include/traceline/.*'
+FormatStyle: file
