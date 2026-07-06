@@ -34,6 +34,27 @@ Documented honestly, including where AI-generated suggestions were wrong for thi
 
 Benchmarks exist in `benchmarks/` from day one so every performance claim is measured, not asserted. Run `traceline_benchmarks` locally for current numbers (CI-published numbers land once M3's benchmark-gate job is added).
 
+## Using Claude Code / MCP on this repo
+
+This repo ships a project-scoped `.mcp.json` that wires up the GitHub MCP server for Claude Code, scoped to this project only.
+
+**Note:** Claude Code does not automatically load `.env` files into the environment used for `.mcp.json` variable expansion (this is a known gap, not yet built in as of writing). The token needs to be an actual exported shell environment variable before you launch Claude Code:
+
+```bash
+export GITHUB_PERSONAL_ACCESS_TOKEN=your-token-here
+claude
+```
+
+`.env.example` in this repo documents the expected variable name for reference; it's not auto-loaded. If you use `direnv` or a similar tool with a personal `.envrc`, that's a reasonable way to avoid re-exporting it every session — just don't commit that file either (it's gitignored alongside `.env`).
+
+A fine-grained PAT limited to just this repo (rather than a classic broad-scope token) is the safer choice.
+
+**If `${GITHUB_PERSONAL_ACCESS_TOKEN}` doesn't expand correctly** in the `headers` block above (there have been Claude Code versions with header-substitution bugs), fall back to registering the server via the CLI instead of the static `.mcp.json`:
+```bash
+claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $GITHUB_PERSONAL_ACCESS_TOKEN"
+```
+Note this writes the *resolved* token into your local `.mcp.json` (a known quirk, not just this repo's issue) — double-check `git diff .mcp.json` before ever committing after using this method, so a real token doesn't end up in history.
+
 ## Building
 
 ```bash
