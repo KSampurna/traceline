@@ -1,7 +1,10 @@
 build/
 *.o
 *.obj
+*.bin
 compile_commands.json
+CTestTestfile.cmake
+CMakeUserPresets.json
 .cache/
 .vscode/
 .idea/
