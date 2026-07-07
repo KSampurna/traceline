@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Configure with -fno-exceptions
-        run: cmake --preset no-exceptions -DSENTINEL_BUILD_TESTS=OFF -DSENTINEL_BUILD_BENCHMARKS=OFF
+        run: cmake --preset no-exceptions -DTRACELINE_BUILD_TESTS=OFF -DTRACELINE_BUILD_BENCHMARKS=OFF
       - name: Build
         run: cmake --build --preset no-exceptions -j
 
