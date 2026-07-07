@@ -25,5 +25,10 @@
         "TRACELINE_NO_EXCEPTIONS": "ON"
       }
     }
+  ],
+  "buildPresets": [
+    { "name": "debug", "configurePreset": "debug" },
+    { "name": "release", "configurePreset": "release" },
+    { "name": "no-exceptions", "configurePreset": "no-exceptions" }
   ]
 }
