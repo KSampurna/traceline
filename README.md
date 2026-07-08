@@ -2,7 +2,7 @@
 
 A deterministic multi-sensor fusion and flight-data recorder engine, built in modern C++23 with the discipline (not the certification) of safety-critical/avionics software practice.
 
-**Status:** early scaffold (M1 in progress) — see [roadmap](docs/design.md#6-roadmap).
+**Status:** M1-M5 complete — sensor simulation, Kalman filter fusion, lock-free telemetry bus + flight recorder, fault injection/property-based tests/fuzzing, and a replay CLI. See [roadmap](docs/design.md#6-roadmap).
 
 ## Why this exists
 
@@ -32,7 +32,7 @@ Documented honestly, including where AI-generated suggestions were wrong for thi
 
 ## Performance
 
-Benchmarks exist in `benchmarks/` from day one so every performance claim is measured, not asserted. Run `traceline_benchmarks` locally for current numbers (CI-published numbers land once M3's benchmark-gate job is added).
+Benchmarks exist in `benchmarks/` from day one so every performance claim is measured, not asserted. Run `traceline_benchmarks` locally for current numbers — none are published here yet, deliberately: this repo doesn't assert latency figures that weren't actually measured on the reader's own hardware.
 
 ## Using Claude Code / MCP on this repo
 
@@ -73,11 +73,21 @@ cmake --build --preset no-exceptions
 
 Requires a C++23 compiler (GCC 12+/Clang 15+), CMake 3.25+.
 
+## Replaying a flight log
+
+`traceline_replay` (built by default, `build/<preset>/tools/traceline_replay`) reads a `FlightRecorder` log and prints each checksum-verified entry:
+
+```bash
+traceline_replay path/to/flight.log          # human-readable
+traceline_replay path/to/flight.log --csv    # CSV, for piping into external plotting/analysis tools
+```
+
+It stops and reports an error at the first corrupted or truncated record, per REQ-005 — a partial, trustworthy replay rather than silently skipping bad data.
+
 ## What's not here yet (honest limitations)
 
-- Flight recorder persistence (scaffolded — M3)
-- Fault injection framework, fuzzing harness (M4)
 - Nonlinear orientation estimation (would require an EKF/UKF — out of scope for v1, see [design doc Non-Goals](docs/design.md#2-goals--non-goals))
+- Physical hardware integration — sensors are simulated with injectable noise/fault models, no hardware-in-the-loop
 - Not certified to DO-178C or any standard — this borrows the *discipline* of that world, and says so explicitly rather than implying otherwise.
 
 ## License
