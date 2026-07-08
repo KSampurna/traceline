@@ -1,0 +1,4 @@
+add_executable(traceline_fuzz_flight_recorder fuzz_flight_recorder.cpp)
+target_link_libraries(traceline_fuzz_flight_recorder PRIVATE traceline_core)
+target_compile_options(traceline_fuzz_flight_recorder PRIVATE -fsanitize=fuzzer,address -g)
+target_link_options(traceline_fuzz_flight_recorder PRIVATE -fsanitize=fuzzer,address)

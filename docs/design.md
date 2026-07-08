@@ -81,7 +81,7 @@ Traceline is a from-scratch simulation of this problem. It is not a toy Kalman f
 | M1 | Repo scaffold, CI pipeline, requirements doc, sensor simulation layer — **done** |
 | M2 | Fusion engine (constant-acceleration Kalman filter) + unit tests + benchmarks — **done**: real predict/update math, convergence-tested across multiple RNG seeds, ASan/UBSan clean |
 | M3 | Telemetry bus + flight recorder, TSan-clean concurrency — **done**: multithreaded stress test (200k items) clean under TSan across repeated runs; verified the test itself catches races by deliberately breaking memory ordering; CRC32-checksummed flight recorder with corruption/truncation detection |
-| M4 | Fault injection framework, property-based tests, fuzzing harness |
+| M4 | Fault injection framework, property-based tests, fuzzing harness — **done**: `test_fusion.cpp` gained the `FaultInjectionTest_*` cases REQ-003 already claimed (dropout/out-of-range/stale-timestamp each verified not to crash the loop, plus a transient-fault-then-recovery case); RapidCheck-based property tests in `test_fusion_properties.cpp` check convergence and fault-survival across randomized inputs instead of one fixed seed/fault type; a libFuzzer harness (`fuzz/fuzz_flight_recorder.cpp`) fuzzes `FlightRecorder::decode_and_verify` directly, smoke-tested every CI run |
 | M5 | Replay tool (CLI to visualize/replay recorded flights), polish docs |
 | Ongoing | AI-workflow doc updated as patterns emerge; one external OSS contribution/month |
 

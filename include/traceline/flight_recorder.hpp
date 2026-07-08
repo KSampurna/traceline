@@ -77,9 +77,17 @@ public:
         return {};
     }
 
+    // Decodes and checksum-verifies a single raw record buffer. Public
+    // (rather than an implementation detail of replay()) because it's a
+    // pure function of its argument -- no private state -- and is the
+    // direct entry point for fuzzing the flight-recorder binary format
+    // (see fuzz/fuzz_flight_recorder.cpp): fuzzing through replay()'s file
+    // I/O would mean a disk write per iteration, which is far slower than
+    // calling the decoder directly on fuzzer-provided bytes.
+    static Result<Entry> decode_and_verify(const std::array<char, kRecordSize>& buf) noexcept;
+
 private:
     static std::uint32_t crc32(const unsigned char* data, std::size_t len) noexcept;
-    static Result<Entry> decode_and_verify(const std::array<char, kRecordSize>& buf) noexcept;
 
     std::string path_;
     std::ofstream out_;

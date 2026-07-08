@@ -64,6 +64,24 @@ jobs:
       - name: Build
         run: cmake --build --preset no-exceptions -j
 
+  fuzz-smoke-test:
+    runs-on: ubuntu-latest
+    # @req REQ-005: smoke-tests the libFuzzer harness on the flight-recorder
+    # binary decode path (docs/design.md section 5) -- builds it and runs it
+    # briefly against the runner's own random input, not a long fuzzing
+    # campaign. Requires Clang (libFuzzer is a Clang/LLVM component, not
+    # available with GCC), which ubuntu-latest ships preinstalled.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure with TRACELINE_BUILD_FUZZERS
+        run: |
+          CXX=clang++ cmake -B build/fuzz -DTRACELINE_BUILD_FUZZERS=ON \
+            -DTRACELINE_BUILD_TESTS=OFF -DTRACELINE_BUILD_BENCHMARKS=OFF
+      - name: Build
+        run: cmake --build build/fuzz -j
+      - name: Smoke test (short fuzz run)
+        run: ./build/fuzz/traceline_fuzz_flight_recorder -max_total_time=10
+
   tsan-telemetry-bus:
     runs-on: ubuntu-latest
     # Dedicated job per docs/ai-workflow.md: the telemetry bus is the
