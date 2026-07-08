@@ -71,12 +71,18 @@ jobs:
     # briefly against the runner's own random input, not a long fuzzing
     # campaign. Requires Clang (libFuzzer is a Clang/LLVM component, not
     # available with GCC), which ubuntu-latest ships preinstalled.
+    #
+    # Same Clang/libstdc++ __cpp_concepts gap as the clang-tidy job above
+    # (this job actually builds traceline_core with Clang, not just
+    # analyzes it, so it hits the identical std::expected-unavailable
+    # failure without the same workaround).
     steps:
       - uses: actions/checkout@v4
       - name: Configure with TRACELINE_BUILD_FUZZERS
         run: |
           CXX=clang++ cmake -B build/fuzz -DTRACELINE_BUILD_FUZZERS=ON \
-            -DTRACELINE_BUILD_TESTS=OFF -DTRACELINE_BUILD_BENCHMARKS=OFF
+            -DTRACELINE_BUILD_TESTS=OFF -DTRACELINE_BUILD_BENCHMARKS=OFF \
+            -DCMAKE_CXX_FLAGS=-D__cpp_concepts=202002L
       - name: Build
         run: cmake --build build/fuzz -j
       - name: Smoke test (short fuzz run)

@@ -1,5 +1,6 @@
 #include "traceline/fusion.hpp"
 #include "traceline/sensor.hpp"
+#include <gtest/gtest.h>
 #include <rapidcheck/gtest.h>
 #include <cmath>
 #include <cstddef>
