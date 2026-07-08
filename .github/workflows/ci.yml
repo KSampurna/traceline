@@ -86,7 +86,7 @@ jobs:
       - name: Build
         run: cmake --build build/fuzz -j
       - name: Smoke test (short fuzz run)
-        run: ./build/fuzz/traceline_fuzz_flight_recorder -max_total_time=10
+        run: ./build/fuzz/fuzz/traceline_fuzz_flight_recorder -max_total_time=10
 
   tsan-telemetry-bus:
     runs-on: ubuntu-latest
