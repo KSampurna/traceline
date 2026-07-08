@@ -1,6 +1,6 @@
 #include "traceline/sensor.hpp"
 
-// Implementation intentionally minimal at scaffold stage -- SimulatedImu
-// is fully defined inline in the header for now. Additional sensor
-// types (GPS, barometric altimeter) land in M1 and will have their
-// noise models implemented here.
+// Implementation intentionally minimal -- SimulatedImu is fully defined
+// inline in the header for now. Additional sensor types (GPS, barometric
+// altimeter) aren't part of the M1-M5 roadmap (see docs/design.md); if
+// pursued later, their noise models would land here.
