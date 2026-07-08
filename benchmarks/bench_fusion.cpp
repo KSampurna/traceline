@@ -2,9 +2,9 @@
 #include <benchmark/benchmark.h>
 
 // @req REQ-001: this benchmark is the source of truth for the p99.9 <
-// 500us latency claim in docs/design.md -- once the real EKF math
-// lands in M2, CI will fail the build if this regresses past target
-// (see .github/workflows/ci.yml benchmark-gate job, added in M2).
+// 500us latency claim in docs/design.md. There is no CI benchmark-gate
+// job enforcing this yet -- numbers here are measured, not asserted;
+// see README.md's Performance section and docs/ai-workflow.md.
 static void BM_FusionPredict(benchmark::State& state) {
     traceline::FusionEngine engine;
     for (auto _ : state) {

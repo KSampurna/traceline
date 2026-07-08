@@ -1,6 +1,7 @@
 #include "traceline/flight_recorder.hpp"
 #include <gtest/gtest.h>
 #include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <vector>
 
@@ -10,8 +11,16 @@ namespace {
 
 // Unique temp file per test process run, so parallel test runs don't
 // collide. Cleaned up in each test via RAII-ish scope guard below.
+// std::filesystem::temp_directory_path() rather than a hardcoded /tmp --
+// the latter doesn't resolve to a writable path on native Windows builds
+// (caught by actually running this suite there, not by inspection: CI
+// only runs on Ubuntu, so a hardcoded Unix path had never been exercised
+// on Windows before).
 std::string temp_path(std::string_view name) {
-    return std::string("/tmp/traceline_flight_recorder_test_") + std::string(name) + ".bin";
+    const auto path =
+        std::filesystem::temp_directory_path() /
+        (std::string("traceline_flight_recorder_test_") + std::string(name) + ".bin");
+    return path.string();
 }
 
 StateEstimate make_estimate(double x, double y, double z, std::int64_t ns) {
