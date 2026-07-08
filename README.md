@@ -34,7 +34,14 @@ Documented honestly, including where AI-generated suggestions were wrong for thi
 
 ## Performance
 
-Benchmarks exist in `benchmarks/` from day one so every performance claim is measured, not asserted. Run `traceline_benchmarks` locally for current numbers — none are published here yet, deliberately: this repo doesn't assert latency figures that weren't actually measured on the reader's own hardware.
+Benchmarks exist in `benchmarks/` from day one so every performance claim is measured, not asserted. Run `traceline_benchmarks` locally to reproduce; these are one measured data point, not a guarantee across hardware/toolchains:
+
+| Benchmark | Time (release build) |
+|---|---|
+| `BM_FusionPredict` | ~400 ns/call |
+| `BM_TelemetryBusPushPop` | ~2.2 ns/op |
+
+Measured on a 12-core x86_64 host, GCC 16.1.0 (MinGW-w64 UCRT64), `CMAKE_BUILD_TYPE=Release`. Well within the p99.9 < 500µs target in `docs/design.md` — there's no CI benchmark-gate job enforcing that yet, so treat this as a snapshot rather than a continuously-verified bound.
 
 ## Using Claude Code / MCP on this repo
 
