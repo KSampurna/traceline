@@ -25,7 +25,10 @@ add_executable(traceline_tests
     test_fusion_properties.cpp
     test_telemetry_bus.cpp
     test_flight_recorder.cpp
+    test_replay_format.cpp
+    ${CMAKE_SOURCE_DIR}/tools/replay_format.cpp
 )
+target_include_directories(traceline_tests PRIVATE ${CMAKE_SOURCE_DIR}/tools)
 target_link_libraries(traceline_tests PRIVATE traceline_core GTest::gtest_main rapidcheck_gtest)
 target_compile_options(traceline_tests PRIVATE -Wall -Wextra)
 

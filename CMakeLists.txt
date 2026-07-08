@@ -11,6 +11,7 @@ option(TRACELINE_BUILD_BENCHMARKS "Build benchmarks" ON)
 option(TRACELINE_ENABLE_SANITIZERS "Build with ASan+UBSan" OFF)
 option(TRACELINE_NO_EXCEPTIONS "Build with -fno-exceptions (enforces std::expected discipline)" OFF)
 option(TRACELINE_BUILD_FUZZERS "Build libFuzzer harnesses (requires Clang)" OFF)
+option(TRACELINE_BUILD_TOOLS "Build CLI tools (replay)" ON)
 
 add_library(traceline_core
     src/sensor.cpp
@@ -41,4 +42,8 @@ endif()
 
 if(TRACELINE_BUILD_FUZZERS)
     add_subdirectory(fuzz)
+endif()
+
+if(TRACELINE_BUILD_TOOLS)
+    add_subdirectory(tools)
 endif()

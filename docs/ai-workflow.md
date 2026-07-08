@@ -39,4 +39,9 @@ This doc is updated as the project progresses. Its purpose is to be specific and
 >
 > `FlightRecorder::decode_and_verify` was moved from `private` to `public` to give the fuzzer a direct entry point (call the decoder on fuzzer bytes directly) instead of fuzzing through `replay()`'s file I/O, which would mean a disk write per fuzz iteration. A deliberate, minimal API change, not scope creep — it's already a pure function of its argument, so exposing it doesn't weaken any invariant.
 
+> Module: replay CLI / doc polish (M5)
+> Used Claude to build `traceline_replay` and to audit `README.md` against actual project state rather than trust its existing wording. The audit found the README understating progress, not overclaiming it: the status line still read "early scaffold (M1 in progress)" and the limitations list still named flight-recorder persistence and the fault-injection/fuzzing work as *not yet done*, even though both had shipped in M3/M4. A stale doc is a stale doc regardless of which direction it's wrong in, so it got corrected either way.
+>
+> One thing deliberately *not* done: the README's Performance section still has no published benchmark numbers. Per this doc's own rule above ("AI cannot benchmark on my hardware"), and because no C++ toolchain was available in the session's environment to run `traceline_benchmarks` locally, no numbers were fabricated to fill that gap — the section was reworded to say so explicitly instead of silently leaving a stale forward-reference in place.
+
 This section will be filled in with real commit references as each module lands — the goal is that anyone reviewing this repo can see the actual review trail, not a claim about one.
