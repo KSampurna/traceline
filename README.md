@@ -1,5 +1,7 @@
 # Traceline
 
+[![CI](https://github.com/KSampurna/traceline/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/KSampurna/traceline/actions/workflows/ci.yml)
+
 A deterministic multi-sensor fusion and flight-data recorder engine, built in modern C++23 with the discipline (not the certification) of safety-critical/avionics software practice.
 
 **Status:** M1-M5 complete — sensor simulation, Kalman filter fusion, lock-free telemetry bus + flight recorder, fault injection/property-based tests/fuzzing, and a replay CLI. See [roadmap](docs/design.md#6-roadmap).
